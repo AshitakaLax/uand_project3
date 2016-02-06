@@ -124,31 +124,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         if (scanResult != null) {
             // handle scan result
             this.ean.setText(scanResult.getContents());
-//
-//            String ean =scanResult.getContents();
-//            ean
-//            //catch isbn10 numbers
-//            if(ean.length()==10 && !ean.startsWith("978")){
-//                ean="978"+ean;
-//            }
-//            if(ean.length()<13){
-//                clearFields();
-//                return;
-//            }
-//            //Once we have an ISBN, start a book intent
-//            Intent bookIntent = new Intent(getActivity(), BookService.class);
-//            bookIntent.putExtra(BookService.EAN, ean);
-//            bookIntent.setAction(BookService.FETCH_BOOK);
-//            getActivity().startService(bookIntent);
-//            AddBook.this.restartLoader();
-//
-//            Context context = getActivity();
-//            CharSequence text = "Error getting Bar Code!";
-//            int duration = Toast.LENGTH_SHORT;
-//
-//            Toast toast = Toast.makeText(context, text, duration);
-//            toast.show();
-
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -238,7 +213,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             Context context = getActivity();
             CharSequence text = "Error getting Bar Code!";
             int duration = Toast.LENGTH_SHORT;
-
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         }

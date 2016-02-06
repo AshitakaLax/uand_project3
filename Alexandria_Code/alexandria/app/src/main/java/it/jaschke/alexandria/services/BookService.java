@@ -2,11 +2,15 @@ package it.jaschke.alexandria.services;
 
 import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,6 +70,22 @@ public class BookService extends IntentService {
         }
     }
 
+   /**
+    * This check is to optimize whether we should even attempt to request the json data
+    * Note: this code snippet was taken from
+    * http://stackoverflow.com/questions/4238921/detect-whether-there-is-an-internet-connection-available-on-android
+    * answer by Alexandre Jasmin
+    * @return true if network connection is setup(not direct internet connection)
+    */
+    private boolean isNetworkAvailable()
+    {
+        ConnectivityManager connectivityManager
+        = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+
+    }
+
     /**
      * Handle action fetchBook in the provided background thread with the provided
      * parameters.
@@ -90,6 +110,21 @@ public class BookService extends IntentService {
         }
 
         bookEntry.close();
+
+        //check if there is any internet here
+        if(!isNetworkAvailable())
+        {
+            //toast the user that there isn't any internet and
+            //abort fetching the book
+            Context context = getApplicationContext();
+            CharSequence text = "No Internet Connectivity!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
+
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
@@ -155,6 +190,13 @@ public class BookService extends IntentService {
         final String CATEGORIES = "categories";
         final String IMG_URL_PATH = "imageLinks";
         final String IMG_URL = "thumbnail";
+
+        //check if the json string is null or empty
+        if(bookJsonString == null || bookJsonString.isEmpty())
+        {
+            //not a valid string here to work with
+            return;
+        }
 
         try {
             JSONObject bookJson = new JSONObject(bookJsonString);
