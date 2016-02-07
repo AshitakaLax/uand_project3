@@ -50,11 +50,13 @@ public class scoresAdapter extends CursorAdapter
         mHolder.date.setText(cursor.getString(COL_MATCHTIME));
         mHolder.score.setText(Utilies.getScores(cursor.getInt(COL_HOME_GOALS),cursor.getInt(COL_AWAY_GOALS)));
         mHolder.match_id = cursor.getDouble(COL_ID);
-        mHolder.home_crest.setImageResource(Utilies.getTeamCrestByTeamName(
-                cursor.getString(COL_HOME)));
-        mHolder.away_crest.setImageResource(Utilies.getTeamCrestByTeamName(
-                cursor.getString(COL_AWAY)
-        ));
+        String teamName = cursor.getString(COL_HOME);
+        mHolder.home_crest.setImageResource(Utilies.getTeamCrestByTeamName(teamName));
+        mHolder.home_crest.setContentDescription("Home Team " +teamName);
+        teamName = cursor.getString(COL_AWAY);
+        mHolder.away_crest.setImageResource(Utilies.getTeamCrestByTeamName(teamName));
+        mHolder.away_crest.setContentDescription("Away Team " +teamName);
+
         //Log.v(FetchScoreTask.LOG_TAG,mHolder.home_name.getText() + " Vs. " + mHolder.away_name.getText() +" id " + String.valueOf(mHolder.match_id));
         //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(detail_match_id));
         LayoutInflater vi = (LayoutInflater) context.getApplicationContext()
